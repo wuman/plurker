@@ -1,6 +1,6 @@
 plurker - A command line (CLI) Plurk client
 
-Put your own login username in plurker.vala.
+Put your own login username and API key in plurker.vala.
 
 Dependencies:
 - libsoup-2.4
