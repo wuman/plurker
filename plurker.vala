@@ -4,18 +4,14 @@ using Posix;
 
 public class Plurker.App : Object {
 
-    /*
-     *  IMPORTANT: Put your login username and API key here.
-     */
-    private static const string USERNAME = "YourUsernameHere";
-    private static const string API_KEY = "YourAPIKeyHere";
-
     public PlurkClient client;
+    private string username;
     private string password;
 
-    public App(string pwd) {
-        client = new PlurkClient(API_KEY);
-        password = pwd;
+    public App(string username, string pwd, string api_key) {
+        client = new PlurkClient(api_key);
+        this.username = username;
+        this.password = pwd;
     }
 
     public void profile(string? user_id) {
@@ -35,9 +31,9 @@ public class Plurker.App : Object {
         });
 
         if ( user_id == null ) {
-            client.login(USERNAME, password, false);
+            client.login(username, password, false);
         } else {
-            client.login(USERNAME, password, true);
+            client.login(username, password, true);
             client.get_public_profile(user_id);
         }
     }
@@ -51,7 +47,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.get_karma();
     }
 
@@ -66,7 +62,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.get_cliques();
     }
 
@@ -83,7 +79,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.get_clique_users(clique_name);
     }
 
@@ -96,7 +92,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.create_clique(clique_name);
     }
 
@@ -109,7 +105,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.rename_clique(clique_name, new_name);
     }
 
@@ -122,7 +118,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.add_user_to_clique(clique_name, user_id);
     }
 
@@ -135,7 +131,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.remove_user_from_clique(clique_name, user_id);
     }
 
@@ -150,7 +146,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.add_plurk(content, Plurk.Qualifier.DEFAULT, null);
     }
 
@@ -165,7 +161,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.edit_plurk(plurk_id, content);
     }
 
@@ -178,7 +174,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.delete_plurk(plurk_id);
     }
 
@@ -191,7 +187,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.delete_response(plurk_id, response_id);
     }
 
@@ -206,7 +202,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.add_response(plurk_id, content);
     }
 
@@ -223,7 +219,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.mute_plurks(ids);
     }
 
@@ -240,7 +236,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.unmute_plurks(ids);
     }
 
@@ -257,7 +253,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.favorite_plurks(ids);
     }
 
@@ -274,7 +270,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.unfavorite_plurks(ids);
     }
 
@@ -297,7 +293,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.get_timeline(null, limit, filter);
     }
 
@@ -320,7 +316,7 @@ public class Plurker.App : Object {
             client.logout();
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.get_unread_timeline(null, limit);
     }
 
@@ -348,7 +344,7 @@ public class Plurker.App : Object {
             }
         });
 
-        client.login(USERNAME, password, true);
+        client.login(username, password, true);
         client.get_responses(plurk_id);
     }
 
@@ -384,6 +380,42 @@ private void die_on_error(Error e) {
 }
 
 public int main(string[] args) {
+
+    File file = File.new_for_path("plurker.config");
+    if ( !file.query_exists() ) {
+        GLib.stderr.printf("File '%s' doesn't exist.\n", file.get_path());
+        return 1;
+    }
+
+    string username = null;
+    string api_key = null;
+    try {
+        var dis = new DataInputStream(file.read());
+        string line;
+        while ( ( line = dis.read_line(null) ) != null ) {
+            string[] vals = line.split(" ", 2);
+            if ( vals.length == 2 ) {
+                switch ( vals[0] ) {
+                case "username":
+                    username = vals[1];
+                    break;
+                case "apikey":
+                    api_key = vals[1];
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    } catch ( Error e ) {
+        die_on_error(e);
+    }
+
+    if ( username == null || username == "" || api_key == null || api_key == "" ) {
+        GLib.stderr.printf("Username or API key not set in plurker.config!\n");
+        return 1;
+    }
+
     if ( args.length < 2 ) {
         GLib.stdout.printf("""
 Specify the command to execute.
@@ -417,7 +449,7 @@ removefromclique <clique_name> <user_id>    : remove user with <user_id> from cl
 
     MainLoop loop = new MainLoop(null, true);
     unowned string password = Posix.getpass("Enter your password: ");
-    Plurker.App app = new Plurker.App(password);
+    Plurker.App app = new Plurker.App(username, password, api_key);
 
     app.client.authenticate.connect((client, e, is_logged_in) => {
         die_on_error(e);
