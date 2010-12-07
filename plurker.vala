@@ -389,6 +389,7 @@ public int main(string[] args) {
 
     string username = null;
     string api_key = null;
+    string password = null;
     try {
         var dis = new DataInputStream(file.read());
         string line;
@@ -401,6 +402,9 @@ public int main(string[] args) {
                     break;
                 case "apikey":
                     api_key = vals[1];
+                    break;
+                case "password":
+                    password = vals[1];
                     break;
                 default:
                     break;
@@ -448,8 +452,15 @@ removefromclique <clique_name> <user_id>    : remove user with <user_id> from cl
     string cmd = args[1];
 
     MainLoop loop = new MainLoop(null, true);
-    unowned string password = Posix.getpass("Enter your password: ");
-    Plurker.App app = new Plurker.App(username, password, api_key);
+
+    Plurker.App app;
+
+    if ( password == null || password == "" ) {
+        unowned string pwd = Posix.getpass("Enter your password: ");
+        app = new Plurker.App(username, pwd, api_key);
+    } else {
+        app = new Plurker.App(username, password, api_key);
+    }
 
     app.client.authenticate.connect((client, e, is_logged_in) => {
         die_on_error(e);
