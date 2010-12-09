@@ -604,7 +604,13 @@ removefromclique <clique_name> <user_id>    : remove user with <user_id> from cl
             GLib.stdout.printf("Specify the clique name for which you want to list the users!\n");
             return 1;
         }
-        app.cliqueusers(args[2]);
+        string content;
+        if ( args.length == 3 ) {
+            content = args[2];
+        } else {
+            content = string.joinv(" ", args[2:args.length]);
+        }
+        app.cliqueusers(content);
         break;
     case "createclique":
         if ( args.length < 3 ) {
