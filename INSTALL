@@ -1,3 +1,43 @@
 Sorry I'm too lazy to write this.
 
 I'll update this when I have time.
+
+
+Building the PlurkVala Library
+------------------------------
+
+You can build the library either manually or using the build system included.
+
+To build the library manually, make sure you are located in the PlurkVala 
+project directory and follow these steps:
+
+1) Generate the *.c, *.h, and *.vapi files.
+
+$ valac --pkg libsoup-2.4 --pkg json-glib-1.0 ./*.vala -C -H ./plurk.h --library plurk
+
+2) Compile and build the .so file.
+
+$ gcc -o ./libplurk.so --shared -fPIC ./*.c `pkg-config --cflags --libs libsoup-2.4` `pkg-config --cflags --libs json-glib-1.0`
+
+You should now have a working shared library file in this directory.  
+
+
+Using the Library in plurker
+----------------------------
+
+You could use the included build system to install the PlurkVala library.  But 
+if you don't yet feel comfortable installing an experimental library, you can 
+dynamically load the library locally.
+
+Assuming that you're now in the plurker project directory, and that the 
+PlurkVala directory is at the same level and is a sibling directory, follow 
+the following steps:
+
+1) Generate the binary for plurker
+
+$ valac -X -I../PlurkVala/ -X -L../PlurkVala/ -X -lplurk -o ./plurker ./plurker.vala ../PlurkVala/plurk.vapi --basedir ./ --pkg libsoup-2.4 --pkg json-glib-1.0 --pkg posix
+
+2) Run the binary
+
+$ LD_LIBRARY_PATH=../PlurkVala/ ./plurker
+
