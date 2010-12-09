@@ -1,5 +1,5 @@
 using Soup;
-using Plurk;
+using Roguso;
 using Posix;
 
 public class Plurker.App : Object {
