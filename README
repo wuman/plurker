@@ -3,6 +3,7 @@ plurker - A command line (CLI) Plurk client
 Put your own login username and API key in plurker.config.
 
 Dependencies:
+- plurk
 - libsoup-2.4
 - json-glib-1.0
 - posix
