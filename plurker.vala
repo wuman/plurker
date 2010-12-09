@@ -4,6 +4,8 @@ using Posix;
 
 public class Plurker.App : Object {
 
+    public static const string PLURKER_API_KEY = "eRT4YZjztBaQPylrq85yqBABAv0zhIqN";
+
     public PlurkClient client;
     private string username;
     private string password;
@@ -415,8 +417,12 @@ public int main(string[] args) {
         die_on_error(e);
     }
 
-    if ( username == null || username == "" || api_key == null || api_key == "" ) {
-        GLib.stderr.printf("Username or API key not set in plurker.config!\n");
+    if ( api_key == null || api_key == "" ) {
+        api_key = Plurker.App.PLURKER_API_KEY;
+    }
+
+    if ( username == null || username == "" ) {
+        GLib.stderr.printf("Username is not set in plurker.config!\n");
         return 1;
     }
 
