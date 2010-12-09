@@ -1,9 +1,76 @@
 plurker - A command line (CLI) Plurk client
+===========================================
 
-Put your own login username and API key in plurker.config.
+plurker is a command line interface (CLI) Plurk client. You can use it to read
+your timeline, post/edit/delete a plurk, mute/unmute/like/unlike a plurk, and
+do many other tasks, all within the command line interface! It's convenient for
+system administrators and geeks alike.
 
-Dependencies:
-- plurk
-- libsoup-2.4
-- json-glib-1.0
-- posix
+The project homepage is at http://code.google.com/p/plurker/.
+
+
+About Plurk
+-----------
+
+Plurk is a twitter-like microblogging service that is super popular in many
+Asian countries. It differs from Twitter in that it offers more engaging
+conversations in the form of threaded responses. It also has several other
+interesting features such as karma, emoticons, and qualifiers.
+
+You can find out more about Plurk at http://www.plurk.com/faq.
+
+
+About Vala
+----------
+
+Vala is a fairly new language. The Vala compiler compiles .vala code into .c
+code and .h headers. It can also build binaries directly from .vala files. The
+Vala compiler is updated very frequently. If you are building the project
+yourself, you might want to upgrade your valac to the newest version at the
+community-maintained Vala PPA (https://launchpad.net/~vala-team/+archive/ppa).
+
+To find out more about Vala please visit http://live.gnome.org/Vala.
+
+
+Dependencies
+------------
+
+plurker depends on the following libraries:
+
+  - PlurkVala (plurk)
+  - libsoup-2.4
+  - posix
+
+plurker has been tested to compile with valac-0.12.
+
+You can find out more about PlurkVala at https://code.google.com/p/plurkvala/.
+
+
+Installation
+------------
+
+See INSTALL.
+
+
+Copyright and Licensing
+-----------------------
+
+plurker is released under the terms of the GNU General Public License version 3.
+See COPYING.
+
+
+Sample Usage
+------------
+
+Before you start running the program, you want to put your own login username
+and optionally API key and password in plurker.config. For example,
+
+username MyUserNameHere
+apikey MyApiKeyHere
+password MyPasswordHere
+
+If you don't put your password in the config file, you will be prompted to enter
+your password each time you run the program.
+
+
+
