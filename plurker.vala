@@ -351,14 +351,18 @@ public class Plurker.App : Object {
     }
 
     private static string print_from_plurk(Plurk plurk) {
-        return "[%10s] (%3d) %8s%-20s %s\n".printf(plurk.plurk_id, plurk.response_count.to_string().to_int(),
+        return "[%10s] (%3d) %8s%-20s %s\n".printf(
+                plurk.plurk_id, 
+                plurk.response_count.to_string().to_int(),
                 plurk.owner_id,
                 plurk.owner != null ? " (%s)".printf(plurk.owner.nick_name) : "", 
                 plurk.content_raw);
     }
 
     private static string print_from_response(Response response) {
-        return "[%10s][%10s] %8s%-20s %s\n".printf(response.plurk_id, response.response_id,
+        return "[%10s][%10s] %8s%-20s %s\n".printf(
+                response.plurk_id, 
+                response.response_id,
                 response.user_id,
                 response.owner != null ? " (%s)".printf(response.owner.nick_name) : "",
                 response.content_raw);
@@ -379,6 +383,32 @@ private void die_on_error(Error e) {
     if ( e != null ) {
         GLib.error("%d: %s", e.code, e.message);
     }
+}
+
+
+private const string _chars = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+private string base10toN(string n, int b) {
+    int num = n.to_int();
+
+    if ( num < 0 || b < 2 || b > 36 ) {
+        return "";
+    }
+
+    var s = "";
+    while ( true ) {
+        var r = num % b;
+        s = _chars[r].to_string() + s;
+        num = num / b;
+        if ( num == 0 ) {
+            break;
+        }
+    }
+    return s;
+}
+
+private string base10to36(string n) {
+    return base10toN(n, 36);
 }
 
 public int main(string[] args) {

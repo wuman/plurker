@@ -1,1 +1,14 @@
 plurker.config
+.deps
+autom4te.cache
+config.*
+configure
+depcomp
+install-sh
+Makefile*
+aclocal.m4
+missing
+plurker
+plurker.c
+*.o
+*.stamp
